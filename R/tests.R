@@ -1,8 +1,15 @@
-## TEST CLIMATE FILE
-##
-## Given a file and a list of expected columns this will test to make
-## sure our data looks good. Returns TRUE if all expected columns are
-## present in the file, otherwise returns FALSE. 
+#' Test a climate file has the expected columns
+#'
+#' @param file_path The path to find the file in the local filesystem
+#' @param expected_columns A list of expected columns
+#'
+#' @return A boolean vector
+#' @export
+#'
+#' @examples
+#' file_path <- "/path/to/file/file_name.csv"
+#' expected_columns <- list("Name", "Data Column 1")
+#' test_climate_file(file_path, expected_columns)
 
 test_climate_file <- function(file_path, expected_columns) {
   df <- fread(file_path)
