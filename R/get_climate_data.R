@@ -1,27 +1,20 @@
 #' Build a valid URL for grabbing a file from CHCD
 #'
 #' @param station_id The ID of the station to be downloaded
-#' @param interval String representing the time interval required:
-#'     hourly, daily or monthly.
+#' @param timecode The numeric timecode to be downloaded
 #' @param year The year of data to be loaded
 #' @param month The month of the year to download data. Setting to NA
 #'     gets all months.
 #'
 #' @return A URL string
-#'
-#' @examples
-#' station_id <- 1706
-#' interval <- "daily"
-#' year <- 1983
-#' month <- NA
-#' build_url(station_id, interval, year, month)
 
-build_url <- function(station_id, interval, year, month = NA) {
+build_url <- function(station_id, timecode, year, month = NA) {
 
-    if (interval == "hourly") timecode <- 1
-    else if (interval == "daily") timecode <- 2
-    else if (interval == "monthly") timecode <- 3
-    else ( return("Invalid interval") )
+    ## This is a little ungainly, but basically we try and account for
+    ## the function being given a text based interval such as "month"
+    ## here.
+    if(!is.numeric(timecode)) timecode <- get_timecode(timecode)
+    if(!is.numeric(timecode)) return(timecode)
 
     if (is.na(month)) month <- 1
 
@@ -55,8 +48,9 @@ build_url <- function(station_id, interval, year, month = NA) {
 
 get_climatedata <- function(place, year, interval) {
 
-    ## Check out input data first. Here we do the checks in order of
-    ## fastest to slowest.
+    ## CHECK INPUT -----------------------------------------------------
+    ##
+    ## Here we do the checks in order of fastest to slowest.
 
     ## Check if the input is a valid year (numeric and within a reasonable range)
     year <- as.numeric(year) # make sure the year is numeric
@@ -72,7 +66,6 @@ get_climatedata <- function(place, year, interval) {
 
     ## get_timecode() will either return a number or an error string
     if(!is.numeric(timecode)) return(timecode)
-
     
     ## Find and check the relevant stations
     stations <- get_station(place)

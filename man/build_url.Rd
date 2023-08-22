@@ -4,13 +4,12 @@
 \alias{build_url}
 \title{Build a valid URL for grabbing a file from CHCD}
 \usage{
-build_url(station_id, interval, year, month = NA)
+build_url(station_id, timecode, year, month = NA)
 }
 \arguments{
 \item{station_id}{The ID of the station to be downloaded}
 
-\item{interval}{String representing the time interval required:
-hourly, daily or monthly.}
+\item{timecode}{The numeric timecode to be downloaded}
 
 \item{year}{The year of data to be loaded}
 
@@ -22,11 +21,4 @@ A URL string
 }
 \description{
 Build a valid URL for grabbing a file from CHCD
-}
-\examples{
-station_id <- 1706
-interval <- "daily"
-year <- 1983
-month <- NA
-build_url(station_id, interval, year, month)
 }
