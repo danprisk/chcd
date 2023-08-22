@@ -1,0 +1,12 @@
+#' Used to generate the station data for inclusion in the
+#' package. This code is not included in package bundles.
+#'
+#'
+load_stationdata <- function() {
+    stn_url <- "https://collaboration.cmc.ec.gc.ca/cmc/climate/Get_More_Data_Plus_de_donnees/Station%20Inventory%20EN.csv"
+    
+    readr::read_csv(
+               stn_url,
+               show_col_types = FALSE
+           )
+}
