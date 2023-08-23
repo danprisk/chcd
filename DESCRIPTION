@@ -13,6 +13,7 @@ Imports:
     magrittr,
     readr,
     dplyr,
-    tibble
+    tibble,
+    stringr
 Depends: 
     R (>= 2.10)

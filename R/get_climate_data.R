@@ -68,15 +68,64 @@ get_climatedata <- function(place, year, interval) {
     if(!is.numeric(timecode)) return(timecode)
     
     ## Find and check the relevant stations
-    stations <- get_station(place)
+    locations <- get_station(place)
 
-    if (is.na(stations)) {
+    if (is.null("locations")) {
         return("Place not found")
     }
 
+    ## DOWNLOAD DATA ---------------------------------------------------
+    ##
+
+    ## Loop through all the locations that we have and download each one.
+    dat_list <- lapply(seq(nrow(locations)), function(i) {
+
+        # Skip any stations that weren't active this year
+        if (locations$first_year[i] > year |
+            locations$last_year[i] < year) return(NULL)
+        
+        url <- build_url(
+            locations$station_id[i],
+            timecode,
+            year
+        )
+        
+        data <- get_file(url)
+
+        return(data)
+        
+    })
+
+    ## Combine the list of data into a single tibble
+    cdata <- dplyr::bind_rows(dat_list)
+
+    return(cdata)
     
     
 }
+
+get_file <- function(url) {
+
+    ## First download the file
+    file <- dl_csv(url)
+
+    file <- file %>%
+        dplyr::rename_all( # remove spaces and special characters
+                   ~ str_to_lower(str_replace_all(gsub("[^A-Za-z0-9]", "_", .), "_+", "_")) %>%
+                       str_remove_all("^_") %>%
+                       str_remove_all("_$")) %>%
+        dplyr::mutate(
+            latitude_y = as.double(latitude_y),
+            longitude_x = as.double(longitude_x),
+            climate_id = as.character(climate_id), # some climate_ids have characters in them
+            year = as.character(year)
+        )
+
+    return(file)
+    
+    
+}
+
 
 #' Converts a text based interval into a CHCD timecode
 #'
@@ -112,7 +161,7 @@ get_timecode <- function(interval) {
 #' Find climate station or stations from a given place. This also
 #' confirms if a given climate station ID is valid.
 #'
-#' @param place Either a climate station ID or a place name.
+#' @param place Either a numeric station ID or a place name.
 #'
 #' @return Returns a tibble containing id, name, and location for all
 #'     valid stations corresponding to place. Or NA if none are found.
@@ -120,12 +169,34 @@ get_timecode <- function(interval) {
 
 get_station <- function(place) {
 
-    return(NA)
+    if (is.numeric(place)) {
+        rows <- stations %>%
+            dplyr::filter(
+                       station_id == place | climate_id == place
+                   )
+        
+        if(nrow(rows) > 0) return(rows)
+    } else if (is.character(place)) {
+        rows <- stations %>%
+            dplyr::filter(
+                       stringr::str_detect(
+                                    name, stringr::regex(place, ignore_case = TRUE)
+                                )|
+                       stringr::str_detect(
+                                    province, stringr::regex(place, ignore_case = TRUE)
+                                )
+                   )
+
+        if(nrow(rows) > 0) return(rows)
+    }
+
+    return(NULL)
 
 }
      
 
-dl_file <- function(url) {
+#' Downloads a csv from the internet
+dl_csv <- function(url) {
 
     max_retries <- 3
     retry_count <- 0  # Initialize the retry count

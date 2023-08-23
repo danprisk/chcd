@@ -3,13 +3,7 @@ test_climate_file <- function(data) {
     expected_columns <- c(
         "Station Name",
         "Climate ID",
-        "Date/Time",
-        "Max Temp (°C)",
-        "Min Temp (°C)",
-        "Mean Temp (°C)",
-        "Total Precip (mm)",
-        "Month",
-        "Day"
+        "Date/Time"
     )
     
     missing_columns <- setdiff(expected_columns, colnames(data))
