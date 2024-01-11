@@ -52,12 +52,12 @@ get_climatedata <- function(place, year, interval) {
     ##
     ## Here we do the checks in order of fastest to slowest.
 
-    ## Check missing data
+    ## Check for missing data
     if(missing(place)) stop("place is required")
     if(missing(year)) stop("year is required")
     if(missing(interval)) interval <- "m"
     
-    ## Check if the input is a valid year (numeric and within a reasonable range)
+    ## Check the format of the data supplied
     if(!is.numeric(place) && !is.character(place)) stop("place must be numeric or string")
     if(!is.numeric(year)) stop("year must be numeric") # make sure the year is numeric
     if(!is.character(interval)) stop("interval must be a string")

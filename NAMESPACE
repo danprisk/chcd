@@ -2,4 +2,5 @@
 
 export(get_climatedata)
 export(get_station)
+export(stations_near)
 importFrom(magrittr,"%>%")

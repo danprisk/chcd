@@ -14,8 +14,8 @@ be a climate station ID, or a text place name.}
 single numeric year or a list of years.}
 
 \item{interval}{The interval that data should be returned for. Must
-be one of: "h", "hourly", "m", "monthly", or "y",
-"yearly". Defaults to monthly.}
+be one of: "h", "hourly", "d", "daily", "m", "monthly". Defaults
+to monthly.}
 }
 \value{
 A single tibble containing all the requested data
