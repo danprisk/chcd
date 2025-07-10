@@ -162,8 +162,8 @@ get_timecode <- function(interval) {
                    short == interval | long == interval
                )
 
-    if(nrow(rows) == 0) return("Invalid interval")
-
+    if(nrow(rows) == 0) stop("Invalid interval")
+    
     output <- rows %>%
         dplyr::pull(
                    code
