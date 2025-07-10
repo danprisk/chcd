@@ -8,6 +8,12 @@ present in the file, otherwise returns FALSE.}
 \usage{
 test_climatefile(file)
 }
+\arguments{
+\item{file}{A file downloaded from CHCD for testing}
+}
+\value{
+TRUE if file contains expected columns, FALSE otherwise.
+}
 \description{
 Given a file and a list of expected columns this will test to make
 sure our data looks good. Returns TRUE if all expected columns are

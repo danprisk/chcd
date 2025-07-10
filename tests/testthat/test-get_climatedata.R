@@ -30,5 +30,8 @@ test_that("files merge correctly", {
 
     ## files download with different col types for snow_on_grnd_flag
     expect_no_error(get_climatedata("squamish",1990,"d"))
+
+    ## check the same with different timecode
+    expect_no_error(get_climatedata("squamish",1990,"m"))
 })
     
