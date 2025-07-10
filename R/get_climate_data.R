@@ -104,12 +104,9 @@ get_climatedata <- function(place, year, interval) {
     })
 
     ## filter out stations that don't have data for this year
-    dat_list <- dat_list[!is.na(dat_list)] %>%
-        map(format_columns, timecode=timecode) %>%
-        bind_rows()
-    
-    ## Combine the list of data into a single tibble
-    cdata <- dplyr::bind_rows(dat_list)
+    cdata <- dat_list[!is.na(dat_list)] %>%
+        purrr::map(format_columns, timecode=timecode) %>%
+        dplyr::bind_rows()
 
     return(cdata)
     
@@ -145,7 +142,7 @@ format_columns <- function(tbl, timecode) {
 format_columns_daily <- function(tbl) {
 
     return <- tbl %>%
-        mutate(across(ends_with("_flag"), as.character))
+        dplyr::mutate(across(ends_with("_flag"), as.character))
 
 }
 
@@ -292,7 +289,7 @@ dl_csv <- function(url) {
                           )
 
             ## Now check the file we downloaded to see if it looks correct
-            if (test_climate_file(dld) == TRUE) {
+            if (test_climatefile(dld) == TRUE) {
 
                 download_success <- TRUE
                 
@@ -313,4 +310,27 @@ dl_csv <- function(url) {
     if (download_success == TRUE) return(dld)
     else return(NULL)
     
+}
+
+#' Given a file and a list of expected columns this will test to make
+#' sure our data looks good. Returns TRUE if all expected columns are
+#' present in the file, otherwise returns FALSE.
+
+test_climatefile <- function(file) {
+
+    ## These columns are in all formats, so provide a rough check that
+    ## our data looks correct
+    expected_columns <- c(
+        "Station Name",
+        "Climate ID"
+    )
+    
+    missing_columns <- setdiff(expected_columns, colnames(file))
+    
+    if (length(missing_columns) > 0) {
+        message("Missing columns in download file")
+        return(FALSE)
+    }
+
+    return(TRUE)
 }
