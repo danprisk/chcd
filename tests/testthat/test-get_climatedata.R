@@ -7,6 +7,11 @@ test_that("year is a valid year", {
     expect_error(get_climatedata(place="squamish", year=1839)) 
     expect_error(get_climatedata(place="squamish", year=999)) 
     expect_error(get_climatedata(place="squamish", year=(as.integer(format(Sys.Date(), "%Y")) + 1 )))
+
+    ## error with bad data in a list of years
+    expect_error(get_climatedata(place="vancouver", year=c(1980:1985, 101, 1990)))
+    expect_error(get_climatedata(place="vancouver", year=c(1980:1985, "bad", 1990)))
+    expect_error(get_climatedata(place="vancouver", year=c(1980:1985, 1839, 1990)))
 })
 
 test_that("interval is a valid format", {

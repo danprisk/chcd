@@ -62,11 +62,14 @@ get_climatedata <- function(place, year, interval) {
     if(!is.numeric(year)) stop("year must be numeric") # make sure the year is numeric
     if(!is.character(interval)) stop("interval must be a string")
 
-    if (
-        nchar(year) != 4 ||
-        year < 1840 ||
-        year > as.integer(format(Sys.Date(), "%Y"))
-    ) stop("year must be between 1840 and present")
+    ## Check that all years supplied are in the correct format
+    lapply(1:length(year), function(i) {
+        if (
+            nchar(year[i]) != 4 ||
+            year[i] < 1840 ||
+            year[i] > as.integer(format(Sys.Date(), "%Y"))
+        ) stop("year must be between 1840 and present")
+    })
 
     ## Convert the interval to a timecode
     timecode <- get_timecode(interval)
@@ -84,17 +87,24 @@ get_climatedata <- function(place, year, interval) {
     ## DOWNLOAD DATA ---------------------------------------------------
     ##
 
+    ## Create a list containing each combination of year & location in
+    ## order to download the relevant file.
+    combinations <- expand.grid(station_id = locations$station_id, year = year)
+    
     ## Loop through all the locations that we have and download each one.
-    dat_list <- lapply(seq(nrow(locations)), function(i) {
+    dat_list <- lapply(1:nrow(combinations), function(i) {
 
-        # Skip any stations that weren't active this year
-        if (locations$first_year[i] > year |
-            locations$last_year[i] < year) return(NA)
+        # Assign the data for the current location for easy ref
+        loc <- locations[locations$station_id == combinations$station_id[i],]
+        
+        # Skip this iteration if this station wasn't active for this year
+        if (loc$first_year > combinations$year[i] |
+            loc$last_year < combinations$year[i]) return(NA)
         
         url <- build_url(
-            locations$station_id[i],
+            combinations$station_id[i],
             timecode,
-            year
+            combinations$year[i]
         )
         
         data <- get_file(url)
