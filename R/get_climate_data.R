@@ -46,7 +46,7 @@ build_url <- function(station_id, timecode, year, month = NA) {
 #' @return A single tibble containing all the requested data
 #' @export
 
-get_climatedata <- function(place, year, interval) {
+get_climatedata <- function(place, years, interval) {
 
     ## CHECK INPUT -----------------------------------------------------
     ##
@@ -54,20 +54,20 @@ get_climatedata <- function(place, year, interval) {
 
     ## Check missing data
     if(missing(place)) stop("place is required")
-    if(missing(year)) stop("year is required")
+    if(missing(years)) stop("year is required")
     if(missing(interval)) interval <- "m"
     
     ## Check if the input is a valid year (numeric and within a reasonable range)
     if(!is.numeric(place) && !is.character(place)) stop("place must be numeric or string")
-    if(!is.numeric(year)) stop("year must be numeric") # make sure the year is numeric
+    if(!is.numeric(years)) stop("year must be numeric") # make sure the year is numeric
     if(!is.character(interval)) stop("interval must be a string")
 
     ## Check that all years supplied are in the correct format
-    lapply(1:length(year), function(i) {
+    lapply(1:length(years), function(i) {
         if (
-            nchar(year[i]) != 4 ||
-            year[i] < 1840 ||
-            year[i] > as.integer(format(Sys.Date(), "%Y"))
+            nchar(years[i]) != 4 ||
+            years[i] < 1840 ||
+            years[i] > as.integer(format(Sys.Date(), "%Y"))
         ) stop("year must be between 1840 and present")
     })
 
@@ -78,7 +78,8 @@ get_climatedata <- function(place, year, interval) {
     if(!is.numeric(timecode)) return(timecode)
     
     ## Find and check the relevant stations
-    locations <- get_station(place)
+    locations <- lapply(place, get_station) %>%
+        dplyr::bind_rows()
 
     if (is.null("locations")) {
         return("Place not found")
@@ -89,7 +90,7 @@ get_climatedata <- function(place, year, interval) {
 
     ## Create a list containing each combination of year & location in
     ## order to download the relevant file.
-    combinations <- expand.grid(station_id = locations$station_id, year = year)
+    combinations <- expand.grid(station_id = locations$station_id, year = years)
     
     ## Loop through all the locations that we have and download each one.
     dat_list <- lapply(1:nrow(combinations), function(i) {
@@ -115,7 +116,10 @@ get_climatedata <- function(place, year, interval) {
 
     ## filter out stations that don't have data for this year
     cdata <- dat_list[!is.na(dat_list)] %>%
-        dplyr::bind_rows()
+        dplyr::bind_rows() %>%
+        # this filters out records that are not within the requested
+        # years as monthly data returns all data for the requested station.
+        dplyr::filter(year %in% years)
 
     return(cdata)
     
@@ -146,7 +150,19 @@ get_file <- function(url) {
             dplyr::across(  # sets all flags to character
                           dplyr::ends_with("_flag"),
                           as.character
-                      )
+                   ),
+            dplyr::across( # sets all temperatures to numeric
+                       dplyr::ends_with("_temp_c"),
+                       as.numeric
+                   ),
+            dplyr::across( # sets all precip measurements to numeric
+                       dplyr::ends_with("_mm"),
+                       as.numeric
+                   ),
+             dplyr::across( # sets all precip measurements to numeric
+                       dplyr::ends_with("_cm"),
+                       as.numeric
+                   )
 
             ## This section needs significant work to clean the files.
             
