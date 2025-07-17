@@ -37,16 +37,18 @@ build_url <- function(station_id, timecode, year, month = NA) {
 #'
 #' @param place The place that data should be downloaded for. This can
 #'     be a climate station ID, or a text place name.
-#' @param year The year, or years, to get data for. Can be either a
+#' @param years The year, or years, to get data for. Can be either a
 #'     single numeric year or a list of years.
 #' @param interval The interval that data should be returned for. Must
-#'     be one of: "h", "hourly", "d", "daily", "m", "monthly". Defaults
-#'     to monthly.
+#'     be one of: "h", "hourly", "d", "daily", "m",
+#'     "monthly". Defaults to monthly.
+#' @param progress Defines if a progress bar is shown. Can be TRUE or
+#'     FALSE. Defaults to TRUE.
 #'
 #' @return A single tibble containing all the requested data
 #' @export
 
-get_climatedata <- function(place, years, interval) {
+get_climatedata <- function(place, years, interval, progress=TRUE) {
 
     ## CHECK INPUT -----------------------------------------------------
     ##
@@ -56,6 +58,10 @@ get_climatedata <- function(place, years, interval) {
     if(missing(place)) stop("place is required")
     if(missing(years)) stop("year is required")
     if(missing(interval)) interval <- "m"
+    if(!is.logical(progress)) {
+        progress <- TRUE
+        warning("progress should be TRUE or FALSE")
+    }
     
     ## Check if the input is a valid year (numeric and within a reasonable range)
     if(!is.numeric(place) && !is.character(place)) stop("place must be numeric or string")
@@ -91,9 +97,17 @@ get_climatedata <- function(place, years, interval) {
     ## Create a list containing each combination of year & location in
     ## order to download the relevant file.
     combinations <- expand.grid(station_id = locations$station_id, year = years)
+
+    if(progress == TRUE) {
+        pb <- progress::progress_bar$new(total = nrow(combinations),
+                                         format = "Downloading: [:bar] :percent :current/:total"
+                                         )
+    }
     
     ## Loop through all the locations that we have and download each one.
     dat_list <- lapply(1:nrow(combinations), function(i) {
+
+        if (progress == TRUE) pb$tick()
 
         # Assign the data for the current location for easy ref
         loc <- locations[locations$station_id == combinations$station_id[i],]
@@ -119,7 +133,7 @@ get_climatedata <- function(place, years, interval) {
         dplyr::bind_rows() %>%
         # this filters out records that are not within the requested
         # years as monthly data returns all data for the requested station.
-        dplyr::filter(year %in% years)
+        dplyr::filter(.data$year %in% years)
 
     return(cdata)
     
@@ -159,10 +173,19 @@ get_file <- function(url) {
                        dplyr::ends_with("_mm"),
                        as.numeric
                    ),
-             dplyr::across( # sets all precip measurements to numeric
+            dplyr::across( # sets all precip measurements to numeric
                        dplyr::ends_with("_cm"),
                        as.numeric
+                    ),
+            dplyr::across( # anything reported in degrees should be numeric
+                       dplyr::ends_with("_deg"),
+                       as.numeric
+                   ),
+            dplyr::across( # speeds should be numeric
+                       dplyr::ends_with("_km_h"),
+                       as.numeric
                    )
+            
 
             ## This section needs significant work to clean the files.
             

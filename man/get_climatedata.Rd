@@ -4,18 +4,21 @@
 \alias{get_climatedata}
 \title{Get historical climate data for the specified time and place}
 \usage{
-get_climatedata(place, year, interval)
+get_climatedata(place, years, interval, progress = TRUE)
 }
 \arguments{
 \item{place}{The place that data should be downloaded for. This can
 be a climate station ID, or a text place name.}
 
-\item{year}{The year, or years, to get data for. Can be either a
+\item{years}{The year, or years, to get data for. Can be either a
 single numeric year or a list of years.}
 
 \item{interval}{The interval that data should be returned for. Must
-be one of: "h", "hourly", "d", "daily", "m", "monthly". Defaults
-to monthly.}
+be one of: "h", "hourly", "d", "daily", "m",
+"monthly". Defaults to monthly.}
+
+\item{progress}{Defines if a progress bar is shown. Can be TRUE or
+FALSE. Defaults to TRUE.}
 }
 \value{
 A single tibble containing all the requested data

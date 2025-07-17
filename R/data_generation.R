@@ -42,6 +42,6 @@ update_stationdata <- function() {
                    last_year = "Last Year"
                )
 
-    usethis::use_data(stations, internal = TRUE)
+    usethis::use_data(stations, internal = TRUE, overwrite = TRUE)
         
 }
