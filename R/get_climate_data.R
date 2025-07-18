@@ -36,7 +36,8 @@ build_url <- function(station_id, timecode, year, month = NA) {
 #' Get historical climate data for the specified time and place
 #'
 #' @param place The place that data should be downloaded for. This can
-#'     be a climate station ID, or a text place name.
+#'     be a climate station ID, or a text place name. Can take a list
+#'     of place names.
 #' @param years The year, or years, to get data for. Can be either a
 #'     single numeric year or a list of years.
 #' @param interval The interval that data should be returned for. Must
@@ -181,9 +182,9 @@ get_file <- function(url) {
                        dplyr::ends_with("_deg"),
                        as.numeric
                    ),
-            dplyr::across( # speeds should be numeric
+            dplyr::across( # some speeds are reported as "<31" so we need to treat this as a character
                        dplyr::ends_with("_km_h"),
-                       as.numeric
+                       as.character
                    )
             
 

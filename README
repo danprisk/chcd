@@ -1,1 +1,57 @@
-This is an in development R package to allow easy access to Canadian Historical Climate Data. 
+CHCD is an R package to allow easy access to Canadian Historical
+Climate Data. The most recent version is CHCD 1.0, released on 17th
+July 2025. 
+
+# Installation
+
+Install via CRAN with: `install.packages("chcd")`
+
+# Usage
+
+The core function of CHCD is to download historical climate data for
+Canada. As such, likely the function you will use most often is
+`chcd::get_climatedata()`.
+
+First you will need to load the CHCD package: `library(chcd)`
+
+## get_climatedata()
+
+At its most simple you can access historical climate data for a
+location by calling `chcd::get_climatedata()` with parameters for
+location, year, and format. 
+
+For instance, in order to access daily weather data for Vancouver in
+2006 you would call `chcd::get_climatedata("vancouver", 2006,
+"d")`. You will get back a single tibble that collects raw daily
+weather data for all weather stations with vancouver in the name that
+were reporting data in 2006. 
+
+The place parameter can be a string or a climate station ID in order
+to target a specific station. Either can be a single variable or a
+list. See `chcd::get_station()` to access climate station IDs.
+
+The date parameter must be a year or a list of years.
+
+The interval parameter defines the interval that data should be
+returned for. This can be one of: daily (d), monthly (m) or yearly
+(y). Monthly and yearly return summary information for those
+intervals.
+
+Currently location searching is rather crude, and it will simply
+search for the string as-is within the names of the weather stations
+(case insensitive). Potentially this may mean missing stations that do
+not use, for instance, "vancouver" in the name but would be useful to
+your project. Future releases will include more advanced search
+functionality. In order to manually review the list of stations
+returned you may want to explore `chcd::get_station()`.
+
+## get_station()
+
+`chcd::get_station()` allows for querying the list of weather stations
+available. By searching for a specific string, all weather stations
+that include that string within the name will be returned along with
+detailed station information. For example, the command
+`chcd::get_station("squamish")` will return a tibble containing
+information such as latitude and longitude, years of operation, and
+province for all stations that include the term "squamish" in their
+name.
