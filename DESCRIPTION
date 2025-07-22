@@ -1,6 +1,6 @@
 Package: chcd
 Title: Access Canadian Historical Climate Data
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: 
     person("Dan", "Prisk", , "dan@prisk.ca", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0002-3377-6978"))
