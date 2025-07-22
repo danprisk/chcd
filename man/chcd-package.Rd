@@ -9,7 +9,7 @@
 Provides easy access to historical climate data in Canada.
 }
 \author{
-\strong{Maintainer}: Dan Prisk \email{dan@prisk.ca} (\href{https://orcid.org/0000-0002-3377-6978}{ORCID})
+\strong{Maintainer}: Dan Prisk \email{dan@prisk.ca} (\href{https://orcid.org/0000-0002-3377-6978}{ORCID}) [copyright holder]
 
 }
 \keyword{internal}

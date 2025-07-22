@@ -7,6 +7,15 @@
 #'     gets all months.
 #'
 #' @return A URL string
+#'
+#' @examples
+#' build_url(337,3,1980)
+#'
+#' # The timecode can also be a string such as "m" or "month"
+#' build_url(337,"m",1990)'
+#' 
+#' # Setting the month is most useful when downloading hourly data
+#' build_url(337,"h",1980,3)
 
 build_url <- function(station_id, timecode, year, month = NA) {
 
@@ -48,6 +57,20 @@ build_url <- function(station_id, timecode, year, month = NA) {
 #'
 #' @return A single tibble containing all the requested data
 #' @export
+#'
+#' @examplesIf interactive()
+#'
+#' # These will return climate data for all stations that include the place string in their name.
+#' get_climatedata("squamish",1980,"monthly")
+#' get_climatedata("toronto",1980","daily")
+#'
+#' # In order to get a specific station you can use its station id (see chcd::get_station())
+#' get_climatedata(337, 1980, "m")
+#'
+#' # Can also support lists of places and years
+#' get_climatedata("squamish", c(1980:1985), "m")
+#' get_climatedata(c("squamish","whistler"), 1990, "m")
+#' get_climatedata(c(337,338,339), c(1974:1975), "daily")
 
 get_climatedata <- function(place, years, interval, progress=TRUE) {
 
@@ -234,11 +257,17 @@ get_timecode <- function(interval) {
 #' Find climate station or stations from a given place. This also
 #' confirms if a given climate station ID is valid.
 #'
-#' @param place Either a numeric station ID or a place name.
+#' @param place Either a numeric station ID or a place name. Case
+#'     insensitive.
 #'
 #' @return Returns a tibble containing id, name, and location for all
 #'     valid stations corresponding to place. Or NA if none are found.
 #' @export
+#'
+#' @examples
+#' get_station("squamish")
+#' get_station("SqUaMiSh")
+#' get_station(337)
 
 get_station <- function(place) {
 
@@ -275,11 +304,10 @@ get_station <- function(place) {
 #'
 #' @return A tibble containing the id, name, and locations for all
 #'     valid stations within the radius of distance from point.
-#' @export
 
 stations_near <- function(longitude, latitude, distance) {
 
-    
+    # Placeholder: functionality to be added in future.
     
 }
      

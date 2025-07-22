@@ -8,7 +8,8 @@ get_climatedata(place, years, interval, progress = TRUE)
 }
 \arguments{
 \item{place}{The place that data should be downloaded for. This can
-be a climate station ID, or a text place name.}
+be a climate station ID, or a text place name. Can take a list
+of place names.}
 
 \item{years}{The year, or years, to get data for. Can be either a
 single numeric year or a list of years.}
