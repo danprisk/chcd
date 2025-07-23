@@ -4,7 +4,10 @@ Version: 0.1.0
 Authors@R: 
     person("Dan", "Prisk", , "dan@prisk.ca", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0002-3377-6978"))
-Description: Provides easy access to historical climate data in Canada.
+Description: Provides easy access to historical climate data in Canada from R.
+	     Search for weather stations and download raw hourly, daily or
+	     monthly weather data across Canada from 1840 to present. Implements
+	     public API access as detailed at <https://climate.weather.gc.ca>. 
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

@@ -2,7 +2,9 @@
 % Please edit documentation in R/get_climate_data.R
 \name{build_url}
 \alias{build_url}
-\title{Build a valid URL for grabbing a file from CHCD}
+\title{Build a valid URL for downloading a file from CHCD. Follows the
+format detailed here
+\url{https://collaboration.cmc.ec.gc.ca/cmc/climate/Get_More_Data_Plus_de_donnees/}.}
 \usage{
 build_url(station_id, timecode, year, month = NA)
 }
@@ -20,5 +22,16 @@ gets all months.}
 A URL string
 }
 \description{
-Build a valid URL for grabbing a file from CHCD
+Build a valid URL for downloading a file from CHCD. Follows the
+format detailed here
+\url{https://collaboration.cmc.ec.gc.ca/cmc/climate/Get_More_Data_Plus_de_donnees/}.
+}
+\examples{
+build_url(337,3,1980)
+
+# The timecode can also be a string such as "m" or "month"
+build_url(337,"m",1990)
+
+# Setting the month is most useful when downloading hourly data
+build_url(337,"h",1980,3)
 }

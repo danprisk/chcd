@@ -1,3 +1,4 @@
 ^LICENSE\.md$
 R/data_generation.R
 ^cran-comments\.md$
+^CRAN-SUBMISSION$

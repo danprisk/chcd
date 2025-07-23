@@ -8,7 +8,8 @@ confirms if a given climate station ID is valid.}
 get_station(place)
 }
 \arguments{
-\item{place}{Either a numeric station ID or a place name.}
+\item{place}{Either a numeric station ID or a place name. Case
+insensitive.}
 }
 \value{
 Returns a tibble containing id, name, and location for all
@@ -17,4 +18,9 @@ valid stations corresponding to place. Or NA if none are found.
 \description{
 Find climate station or stations from a given place. This also
 confirms if a given climate station ID is valid.
+}
+\examples{
+get_station("squamish")
+get_station("SqUaMiSh")
+get_station(337)
 }

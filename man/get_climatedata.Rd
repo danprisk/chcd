@@ -2,7 +2,11 @@
 % Please edit documentation in R/get_climate_data.R
 \name{get_climatedata}
 \alias{get_climatedata}
-\title{Get historical climate data for the specified time and place}
+\title{Get historical climate data for the specified time and place. The
+data returned will be raw data as originally reported. As many
+weather stations historically use manual entry to report this data
+this is likely to mean that data cleaning will be required for
+sensible usage.}
 \usage{
 get_climatedata(place, years, interval, progress = TRUE)
 }
@@ -12,7 +16,8 @@ be a climate station ID, or a text place name. Can take a list
 of place names.}
 
 \item{years}{The year, or years, to get data for. Can be either a
-single numeric year or a list of years.}
+single numeric year or a list of years. All years must be
+between 1840 and present.}
 
 \item{interval}{The interval that data should be returned for. Must
 be one of: "h", "hourly", "d", "daily", "m",
@@ -25,5 +30,25 @@ FALSE. Defaults to TRUE.}
 A single tibble containing all the requested data
 }
 \description{
-Get historical climate data for the specified time and place
+Get historical climate data for the specified time and place. The
+data returned will be raw data as originally reported. As many
+weather stations historically use manual entry to report this data
+this is likely to mean that data cleaning will be required for
+sensible usage.
+}
+\examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+
+# These will return climate data for all stations that include the place string in their name.
+get_climatedata("squamish",1980,"monthly")
+get_climatedata("toronto",1980,"daily")
+
+# In order to get a specific station you can use its station id (see chcd::get_station())
+get_climatedata(337, 1980, "m")
+
+# Can also support lists of places and years
+get_climatedata("squamish", c(1980:1985), "m")
+get_climatedata(c("squamish","whistler"), 1990, "m")
+get_climatedata(c(337,338,339), c(1974:1975), "daily")
+\dontshow{\}) # examplesIf}
 }

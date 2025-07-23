@@ -1,4 +1,6 @@
-#' Build a valid URL for grabbing a file from CHCD
+#' Build a valid URL for downloading a file from CHCD. Follows the
+#' format detailed here
+#' <https://collaboration.cmc.ec.gc.ca/cmc/climate/Get_More_Data_Plus_de_donnees/>.
 #'
 #' @param station_id The ID of the station to be downloaded
 #' @param timecode The numeric timecode to be downloaded
@@ -7,12 +9,13 @@
 #'     gets all months.
 #'
 #' @return A URL string
-#'
+#' @export
+#' 
 #' @examples
 #' build_url(337,3,1980)
 #'
 #' # The timecode can also be a string such as "m" or "month"
-#' build_url(337,"m",1990)'
+#' build_url(337,"m",1990)
 #' 
 #' # Setting the month is most useful when downloading hourly data
 #' build_url(337,"h",1980,3)
@@ -42,13 +45,18 @@ build_url <- function(station_id, timecode, year, month = NA) {
   
 }
 
-#' Get historical climate data for the specified time and place
+#' Get historical climate data for the specified time and place. The
+#' data returned will be raw data as originally reported. As many
+#' weather stations historically use manual entry to report this data
+#' this is likely to mean that data cleaning will be required for
+#' sensible usage.
 #'
 #' @param place The place that data should be downloaded for. This can
 #'     be a climate station ID, or a text place name. Can take a list
 #'     of place names.
 #' @param years The year, or years, to get data for. Can be either a
-#'     single numeric year or a list of years.
+#'     single numeric year or a list of years. All years must be
+#'     between 1840 and present.
 #' @param interval The interval that data should be returned for. Must
 #'     be one of: "h", "hourly", "d", "daily", "m",
 #'     "monthly". Defaults to monthly.
@@ -62,7 +70,7 @@ build_url <- function(station_id, timecode, year, month = NA) {
 #'
 #' # These will return climate data for all stations that include the place string in their name.
 #' get_climatedata("squamish",1980,"monthly")
-#' get_climatedata("toronto",1980","daily")
+#' get_climatedata("toronto",1980,"daily")
 #'
 #' # In order to get a specific station you can use its station id (see chcd::get_station())
 #' get_climatedata(337, 1980, "m")
